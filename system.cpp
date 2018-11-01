@@ -9,15 +9,7 @@
 
 
 
-System::System(std::string fileName1, std::string fileName2, std::string fileName3, std::string fileName4):
-//use main parameter after !
-m_time_quantum(3),
-m_start_quantum(-1),
-m_number_frame(30),
-m_t(0),
-m_running_process(-1),
-m_loading_frame_time(6),//same for all the cases
-m_running_frame_time(1)
+System::System(std::string fileName1, std::string fileName2, std::string fileName3, std::string fileName4)
 {
 	//Call all the constructor of all the processes passing the file name as parameter
 	Process p1(fileName1);
@@ -37,7 +29,15 @@ m_running_frame_time(1)
 		Process p4(fileName4);
 		v_processes.push_back(p4);		
 	}
+	//use main parameter after !
+	m_time_quantum = 3;
+	m_number_frame = 30;
 
+	m_start_quantum = -1;
+	m_t = 0;
+	m_running_process = -1;
+	m_loading_frame_time = 6;//same for all the cases
+	m_running_frame_time = 1;
 }
 
 System::~System()
