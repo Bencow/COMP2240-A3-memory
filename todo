@@ -6,4 +6,4 @@ good practice to apply :
 - should i use uint for go trough a vector 
 
 
-don't mention the destrctor in the .cpp can cause linking errors
+don't mention the destrctor in the .cpp cause linking errors !

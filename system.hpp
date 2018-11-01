@@ -27,7 +27,7 @@ public:
 	System(std::string fileName1, std::string fileName2, std::string fileName3="", std::string fileName4="");
 	~System();
 
-
+	void display_processes_frames()const;
 
 	
 };

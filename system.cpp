@@ -35,3 +35,13 @@ m_number_frame(30)
 
 }
 
+System::~System()
+{}
+
+void System::display_processes_frames()const
+{
+	for(uint i = 0 ; i < v_processes.size() ; ++i)
+	{
+		v_processes[i].display_frames();
+	}
+}
