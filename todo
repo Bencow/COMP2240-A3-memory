@@ -7,3 +7,17 @@ good practice to apply :
 
 
 don't mention the destrctor in the .cpp cause linking errors !
+
+
+Prototyping:
+DONE -read files and load the frames into the processes 
+- load all the frames for each process and run round robin
+- run RR with dynamic rame loading
+
+
+
+
+
+
+
+L

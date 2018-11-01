@@ -15,8 +15,9 @@
 
 int main(int argc, char const *argv[])
 {
-	System s("Process1.txt","Process2.txt","Process3.txt","Process4.txt");
-	s.display_processes_frames();
+	System syst("Process1.txt","Process2.txt","Process3.txt","Process4.txt");
+	syst.display_processes_frames();
+
 
 
 

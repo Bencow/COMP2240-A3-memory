@@ -12,7 +12,12 @@
 System::System(std::string fileName1, std::string fileName2, std::string fileName3, std::string fileName4):
 //use main parameter after !
 m_time_quantum(3),
-m_number_frame(30)
+m_start_quantum(-1),
+m_number_frame(30),
+m_t(0),
+m_running_process(-1),
+m_loading_frame_time(6),//same for all the cases
+m_running_frame_time(1)
 {
 	//Call all the constructor of all the processes passing the file name as parameter
 	Process p1(fileName1);
@@ -45,3 +50,90 @@ void System::display_processes_frames()const
 		v_processes[i].display_frames();
 	}
 }
+
+
+void System::updateReadyQueue()
+{
+	//got through all the processes
+	for(uint i = 0 ; i < v_processes.size() ; ++i)
+	{
+		//if the process is currently loading a frame AND if it's not in the ready queue already
+		if(v_processes[i].getStartLoadFrame() != -1 && !v_processes[i].getReady())
+		{
+			//if this process has finished to load its frame
+			if(v_processes[i].getStartLoadFrame() + m_loading_frame_time <= m_t)
+			{
+				//add this process in the ready queue
+				q_ready.push_back(i);
+				v_processes[i].setReady(true);
+				v_processes[i].stopLoadingFrame();
+			}
+		}
+	}
+}
+/*
+void System::run_round_robin()
+{
+	updateReadyQueue();
+
+	//if there is a process running at the moment
+	if(m_running_process != -1)
+	{
+		//check if its job is over
+		if(v_processes[m_running_process].is_over())
+		{
+			//stop running this process
+			m_running_process = -1;
+		}
+		//check if this process has expired its time quantum
+		else if(m_start_quantum + m_time_quantum <= m_t)
+		{
+			//put this process back in the ready queue
+			q_ready.push_back(m_running_process);
+			m_running_process = -1;
+		}
+		//else check if it has the next frame to run already loaded in memory
+		else if(v_processes[m_running_process].nextFrameLoaded())
+		{
+			//continue running this process
+		}
+		else//this process doesn't have the next frame in memory
+		{
+			//issue a page fault and start loading this frame
+			v_processes[m_running_process].startLoadFrame(m_t);
+			//stop running this process
+			m_running_process = -1;
+		}
+	}
+	//not a else because if a process issue a page fault no process is actually running
+	//there is no process currently running
+	if(m_running_process == -1)
+	{
+		if(!q_ready.empty())
+		{
+			//run the first element of the ready queue
+			m_running_process = q_ready.front();
+			m_start_quantum = m_t;
+			q_ready.pop_front();
+		}
+		else//no process have their next frame ready
+		{
+			m_running_process = -1;
+			//check for page fault
+			for(uint i = 0 ; i < v_processes.size() ; ++i)
+			{
+				//if this process is not already loading a page
+				if(!v_processes[i].is_loading_frame())
+				{
+					//issue a page fault and start loading this frame
+					v_processes[m_running_process].startLoadFrame(m_t);
+				}
+			}
+		}	
+
+	}
+
+
+
+	m_t++;
+}*/

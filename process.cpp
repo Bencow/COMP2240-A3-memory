@@ -42,3 +42,34 @@ void Process::display_frames()const
 	}
 	std::cout << std::endl;
 }
+
+void Process::load_all_frames()
+{
+	for(uint i = 0 ; i < 5 ; ++i)
+	{
+		v_loaded_frames.push_back(i);
+	}
+}
+
+bool Process::is_over()
+{
+	if(m_next_frame >= v_frames.size())
+		return true;
+	else
+		return false;
+}
+bool Process::nextFrameLoaded()
+{
+	for(uint i = 0 ; i < v_loaded_frames.size() ; ++i)
+	{
+		if(m_next_frame == v_loaded_frames[i])
+			return true;
+	}
+	return false;
+}
+
+void Process::startLoadFrame(int t)
+{ 
+	m_start_loading_frame = t; 
+	m_loading_frame = true;
+}
