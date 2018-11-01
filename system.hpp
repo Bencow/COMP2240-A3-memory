@@ -10,6 +10,9 @@
 #define SYSTEM_HPP
 
 #include <vector>
+#include <string>
+
+#include "process.hpp"
 
 
 class System
@@ -17,9 +20,11 @@ class System
 private:
 	std::vector<Process> v_processes;
 	std::vector<int> v_ready_queue;
+	int m_time_quantum;
+	int m_number_frame;
 
 public:
-	System();
+	System(std::string fileName1, std::string fileName2, std::string fileName3="", std::string fileName4="");
 	~System();
 
 
