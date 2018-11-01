@@ -11,18 +11,22 @@
 #define PROCESS_HPP
 
 #include <vector>
-
+#include <string>
+#include <iostream>
+#include <fstream>
 
 class Process
 {
 private:
 	int m_id;
 	bool m_blocked;
-	std::vector<int> v_frame;
-	std::vector<int> v_loaded_frame;
+	std::vector<int> v_frames;
+	std::vector<int> v_loaded_frames;
 public:
-	Process();
+	Process(std::string fileName);
 	~Process();
+
+	void display_frames()const;
 	
 };
 

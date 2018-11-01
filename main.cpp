@@ -9,17 +9,13 @@
 #include <iostream>
 #include <string>
 
+#include "system.hpp"
 
-void readProcess(std::string fileName)
-{
-	std::ifstream file(fileName);
 
-	//fileName >> 
-}
 
 int main(int argc, char const *argv[])
 {
-	
+	System s("Process1.txt","Process2.txt","Process3.txt","Process4.txt",)
 
 
 
