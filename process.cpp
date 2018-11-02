@@ -52,7 +52,7 @@ void Process::display_frames()const
 
 void Process::load_all_frames()
 {
-	for(uint i = 1 ; i < 6 ; ++i)
+	for(uint i = 1 ; i < 13 ; ++i)
 	{
 		v_loaded_frames.push_back(i);
 	}
