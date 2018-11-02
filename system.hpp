@@ -35,6 +35,9 @@ private:
 	int m_memory_process;
 
 	int m_number_process;
+
+	bool m_LRU;
+
 	//current time
 	int m_t;
 	//current process running, correspond to an index of the vector v_processes[]
@@ -53,7 +56,7 @@ public:
 
 	//put in the ready queue the processes who have finished to load their current frame
 	void updateReadyQueue();
-	void simple_RR();
+	void simple_RR(bool LRU);
 	
 	//return false if there is no process ready to execute
 	//otherwise return true and execute the process

@@ -160,7 +160,6 @@ void System::manageRunningProcess()
 	else if(v_processes[m_running_process].nextFrameLoaded())
 	{
 		std::cout <<" run the same again";
-
 		v_processes[m_running_process].executeNextFrame(m_t);
 		//running process keep the same value
 	}
@@ -176,7 +175,6 @@ void System::manageRunningProcess()
 		v_processes[m_running_process].issuePageFault(m_t);
 		//stop running this process
 		m_running_process = -1;
-		
 	}
 }
 void System::manageNoRunningProcess()
@@ -209,8 +207,10 @@ void System::manageNoRunningProcess()
 	}
 }
 
-void System::simple_RR()
+void System::simple_RR(bool LRU)
 {
+	//if LRU is false run clock !
+	m_LRU = LRU;
 	while(!allProcessesFinshed())
 	{
 		updateReadyQueue();
