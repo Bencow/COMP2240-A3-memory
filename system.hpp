@@ -20,8 +20,8 @@ class System
 {
 private:
 	std::vector<Process> v_processes;
-	//ready queue stores index of the v_processes vector
-	std::list<size_t> q_ready;
+	//the elements of the ready queue point on elements of the v_processes vector
+	std::list<Process*> q_ready;
 	//time quantum for round robin
 	int m_time_quantum;
 	//beginning of the last time quantum, change each time we start running another process
@@ -32,7 +32,7 @@ private:
 	//current time
 	int m_t;
 	//current process running, correspond to an index of the vector v_processes[]
-	// =-1 if no process is running
+	// =-1 if no process is running so it can't be a size_t
 	int m_running_process;
 	//time to load a frame in memory
 	int m_loading_frame_time;

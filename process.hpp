@@ -30,6 +30,7 @@ private:
 	//stores the time when this process was running
 	std::vector<int> v_execution_time;
 	
+	int m_id;
 	//next frame to execute, index of the vector v_frames
 	size_t m_next_frame;
 	//time when the last page fault was issued
@@ -45,7 +46,7 @@ private:
 	int m_finish;
 
 public:
-	Process(std::string fileName);
+	Process(std::string fileName, int id);
 	~Process();
 
 	//test function for see if the files have been read correctly
@@ -56,7 +57,8 @@ public:
 	void executeNextFrame(int t);
 	void tryExecuteNextFrame(int t);
 
-
+	int getId()const{ return m_id; }
+	
 	std::string getName()const { return m_name; }
 
 	void setFinish(int val){ m_finish = val; }

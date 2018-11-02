@@ -8,8 +8,9 @@
 #include "process.hpp"
 
 
-Process::Process(std::string fileName)
+Process::Process(std::string fileName, int id)
 {
+	m_id = id;
 	std::ifstream in(fileName.c_str());
 	
 	std::string buffer;

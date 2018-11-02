@@ -10,23 +10,26 @@
 
 
 System::System(std::string fileName1, std::string fileName2, std::string fileName3, std::string fileName4)
-{
+{	
+	int i = 0;
 	//Call all the constructor of all the processes passing the file name as parameter
-	Process p1(fileName1);
+	Process p1(fileName1, i);
 	v_processes.push_back(p1);
-
-	Process p2(fileName2);
+	i++;
+	Process p2(fileName2, i);
 	v_processes.push_back(p2);
 	//if there is a 3rd file
 	if(fileName3 != "")
 	{
-		Process p3(fileName3);
+		i++;
+		Process p3(fileName3, i);
 		v_processes.push_back(p3);		
 	}
 	//if there is a 4th file
 	if(fileName4 != "")
 	{
-		Process p4(fileName4);
+		i++;
+		Process p4(fileName4, i);
 		v_processes.push_back(p4);		
 	}
 	//use main parameter after !
@@ -64,7 +67,7 @@ void System::updateReadyQueue()
 			if(v_processes[i].getStartLoadFrame() + m_loading_frame_time <= m_t)
 			{
 				//add this process in the ready queue
-				q_ready.push_back(i);
+				q_ready.push_back(&v_processes[i]);
 				v_processes[i].setReady(true);
 				v_processes[i].stopLoadingFrame();
 			}
@@ -92,7 +95,7 @@ bool System::runNextReadyProcess()
 	{
 		m_start_quantum = m_t;
 		//run the first element of the ready queue
-		m_running_process = q_ready.front();
+		m_running_process = q_ready.front()->getId();
 		q_ready.pop_front();
 		//run it
 		v_processes[m_running_process].executeNextFrame(m_t);
@@ -110,11 +113,11 @@ void System::simple_RR()
 		v_processes[i].load_all_frames();
 
 		//put all the processes in the ready queue in the order of their index
-		q_ready.push_back(i);
+		q_ready.push_back(&v_processes[i]);
 	}
 	
 	m_start_quantum = 0;
-	m_running_process = q_ready.front();
+	m_running_process = q_ready.front()->getId();
 	q_ready.pop_front();
 
 	while(!allProcessesFinshed())
@@ -142,7 +145,7 @@ void System::simple_RR()
 			else if(m_start_quantum + m_time_quantum <= m_t)
 			{
 				//put this process back in the ready queue
-				q_ready.push_back(m_running_process);
+				q_ready.push_back(&v_processes[m_running_process]);
 
 				//run the next process if there is one ready
 				if(!runNextReadyProcess())
@@ -216,7 +219,7 @@ void System::run_round_robin()
 			else if(m_start_quantum + m_time_quantum <= m_t)
 			{
 				//put this process back in the ready queue
-				q_ready.push_back(m_running_process);
+				q_ready.push_back(&v_processes[m_running_process]);
 				m_running_process = -1;
 			}
 			//else check if it has the next frame to run already loaded in memory
@@ -242,7 +245,7 @@ void System::run_round_robin()
 			if(!q_ready.empty())
 			{
 				//run the first element of the ready queue
-				m_running_process = q_ready.front();
+				m_running_process = q_ready.front()->getId();
 				m_start_quantum = m_t;
 				q_ready.pop_front();
 			}

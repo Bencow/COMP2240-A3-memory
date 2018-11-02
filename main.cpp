@@ -15,13 +15,11 @@
 
 int main(int argc, char const *argv[])
 {
-	System syst("Process1.txt","Process2.txt","Process3.txt");
+	// System syst("S1/Process1.txt","S1/Process2.txt","S1/Process3.txt", "S1/Process4.txt");
+	 System syst("S2/Process1.txt","S2/Process2.txt","S2/Process3.txt");
 	syst.display_processes_frames();
 	syst.simple_RR();
 	syst.display_results();
-
-
-
 
 
 	return 0;
