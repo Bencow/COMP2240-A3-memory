@@ -120,8 +120,7 @@ void System::simple_RR()
 	while(!allProcessesFinshed())
 	{
 		//if there is a process running at the moment
-		//if(m_running_process != -1)
-		if(true)
+		if(m_running_process != -1)
 		{
 			//if its job is over
 			if(v_processes[m_running_process].is_over())
@@ -129,15 +128,13 @@ void System::simple_RR()
 				//set its exit time
 				v_processes[m_running_process].setFinish(m_t);
 				
-				//run the next process if there is one ready
-				runNextReadyProcess();
-				/*
+				//run the next process if there is one ready				
 				if(!runNextReadyProcess())
 				{
-					//if no process available
-					m_running_process = -1;//finish the program				
+					//if no process available stay idle
+					m_running_process = -1;				
 				}
-				*/
+				
 			}
 			//check if this process has expired its time quantum
 			else if(m_start_quantum + m_time_quantum <= m_t)
@@ -145,18 +142,25 @@ void System::simple_RR()
 				//put this process back in the ready queue
 				q_ready.push_back(m_running_process);
 
-				runNextReadyProcess();
-				/*
 				//run the next process if there is one ready
 				if(!runNextReadyProcess())
 				{
-					//if no process available
-					m_running_process = -1;//finish the program		
-				}*/
+					//if no process available stay idle
+					m_running_process = -1;
+				}
 			}
 			else//the current process can run normally
 			{
 				v_processes[m_running_process].executeNextFrame(m_t);
+			}
+		}
+		else//there is no process running
+		{
+			//run the next process if there is one ready
+			if(!runNextReadyProcess())
+			{
+				//if no process available stay idle
+				m_running_process = -1;
 			}
 		}
 		m_t++;
