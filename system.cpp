@@ -54,7 +54,6 @@ void System::display_processes_frames()const
 	}
 }
 
-
 void System::updateReadyQueue()
 {
 	//got through all the processes
@@ -108,19 +107,6 @@ bool System::runNextReadyProcess()
 
 void System::simple_RR()
 {
-	for(uint i = 0 ; i < v_processes.size() ; ++i)
-	{
-		// //load all the frames for each process
-		//v_processes[i].load_all_frames();
-
-		//put all the processes in the ready queue in the order of their index
-		//q_ready.push_back(&v_processes[i]);
-	}
-	/*
-	m_start_quantum = 0;
-	m_running_process = q_ready.front()->getId();
-	q_ready.pop_front();
-	*/
 	while(!allProcessesFinshed())
 	{
 		updateReadyQueue();
@@ -147,14 +133,26 @@ void System::simple_RR()
 			{
 				std::cout <<" time quantum over";
 
-				//put this process back in the ready queue
-				q_ready.push_back(&v_processes[m_running_process]);
-				v_processes[m_running_process].setReady(true);
-
+				
+				//check if this process can run the next 
+				if(v_processes[m_running_process].nextFrameLoaded())
+				{
+					//put this process back in the ready queue
+					q_ready.push_back(&v_processes[m_running_process]);
+					v_processes[m_running_process].setReady(true);
+				}
+				else
+				{
+					std::cout <<" page fault 3";
+					//issue a page fault and start loading this frame
+					v_processes[m_running_process].issuePageFault(m_t);
+					//stop running this process
+					m_running_process = -1;
+				}
+				
 				//if there is ready processes waiting			
 				if(!q_ready.empty())
 				{
-					std::cout << " tada";
 					runNextReadyProcess();
 				}
 				else//if no process available : stay idle
@@ -204,7 +202,7 @@ void System::simple_RR()
 		}
 		std::cout << std::endl;
 		m_t++;
-		//usleep(100000);
+		usleep(100000);
 	}
 }
 
@@ -221,7 +219,8 @@ void System::display_results()const
 				  << v_processes[i].getFinish() << "            "
 				  << v_processes[i].getNumberPageFault() << "         ";
 		v_processes[i].display_page_faults();
-		//v_processes[i].display_execution();
+		std::cout <<"           ";
+		v_processes[i].display_execution();
 		std::cout << std::endl;
 	}
 }

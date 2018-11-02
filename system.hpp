@@ -22,6 +22,7 @@ class System
 private:
 	std::vector<Process> v_processes;
 	//the elements of the ready queue point on elements of the v_processes vector
+	//ready queue stores processes which are able to rn the next frame
 	std::list<Process*> q_ready;
 	//time quantum for round robin
 	int m_time_quantum;

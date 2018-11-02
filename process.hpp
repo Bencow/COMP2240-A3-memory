@@ -31,7 +31,7 @@ private:
 	std::vector<int> v_execution_time;
 	
 	int m_id;
-	//next frame to execute, index of the vector v_frames
+	//next frame to execute, index of vector v_frames
 	size_t m_next_frame;
 	//time when the last page fault was issued
 	int m_start_loading_frame;
@@ -54,8 +54,6 @@ public:
 	//test function
 	void load_all_frames();
 
-	
-
 	int getId()const{ return m_id; }
 
 	std::string getName()const { return m_name; }
@@ -76,7 +74,7 @@ public:
 	uint getNumberPageFault() const { return v_page_faults.size(); }
 
 	//return true if the next page is already loaded = if the 
-	bool nextFrameLoaded();
+	bool nextFrameLoaded()const;
 	void executeNextFrame(int t);
 	//this function is called when a frame has finished to be loaded
 	//add the m_next_frame to the v_loaded_frames
@@ -88,7 +86,6 @@ public:
 	
 	void display_page_faults()const;
 	void display_execution()const;
-
 };
 
 

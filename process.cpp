@@ -62,10 +62,10 @@ void Process::load_all_frames()
 void Process::executeNextFrame(int t)
 {
 	//store this value to debug
-	v_execution.push_back(v_frames.at(m_next_frame));
+	v_execution.push_back(v_frames[m_next_frame]);
 	v_execution_time.push_back(t);
 	//increment the next frame to execute
-	m_next_frame++;
+	m_next_frame++;//don't know if it will work !!!
 }
 
 bool Process::is_over()
@@ -75,7 +75,7 @@ bool Process::is_over()
 	else
 		return false;
 }
-bool Process::nextFrameLoaded()
+bool Process::nextFrameLoaded()const
 {
 	for(uint i = 0 ; i < v_loaded_frames.size() ; ++i)
 	{
