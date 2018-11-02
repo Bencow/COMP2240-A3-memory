@@ -22,6 +22,12 @@ private:
 	std::vector<int> v_frames;
 	//stores the number of frame loaded in memory 
 	std::vector<int> v_loaded_frames;
+	//LRU: vector same size as v_loaded_frames, store the time of the last use 
+	//of the frame at the same index in v_loaded_frames
+	std::vector<int> v_last_use;
+	//CLOCK: 
+	std::vector<bool> v_use_bit;
+	//name of the process
 	std::string m_name;
 	//stores the time of all the page faults issued by this process
 	std::vector<int> v_page_faults;

@@ -56,16 +56,36 @@ void Process::load_all_frames()
 	for(uint i = 1 ; i < 13 ; ++i)
 	{
 		v_loaded_frames.push_back(i);
+		v_last_use.push_back(0);
 	}
 }
 
 void Process::executeNextFrame(int t)
 {
+	int index;
+
 	//store this value to debug
 	v_execution.push_back(v_frames[m_next_frame]);
 	v_execution_time.push_back(t);
+
+	std::cout << " id=" <<m_id;
+	
+
+
+	//LRU
+	//to know the index of the next_frame in v_loaded_frame 
+	for(uint i = 0 ; i < v_loaded_frames.size() ; ++i)
+	{
+		if(v_frames.at(m_next_frame) == v_loaded_frames[i])
+		{
+			index = i;
+		}
+	}
+	v_last_use.at(index) = t;
+	std::cout << "yo";
+
 	//increment the next frame to execute
-	m_next_frame++;//don't know if it will work !!!
+	m_next_frame++;
 }
 
 bool Process::is_over()
@@ -91,6 +111,8 @@ bool Process::nextFrameLoaded()const
 void Process::addNextFrame()
 {
 	v_loaded_frames.push_back(v_frames[m_next_frame]);
+	v_last_use.push_back(0);
+	//v_use_bit.push_back(false);
 }
 
 void Process::issuePageFault(int t)

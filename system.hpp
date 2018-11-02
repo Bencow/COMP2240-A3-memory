@@ -31,6 +31,10 @@ private:
 	int m_start_quantum;
 	//number total that the system can load in main memory
 	int m_number_frame;
+	//number of frame that each process can load
+	int m_memory_process;
+
+	int m_number_process;
 	//current time
 	int m_t;
 	//current process running, correspond to an index of the vector v_processes[]
@@ -55,9 +59,12 @@ public:
 	//otherwise return true and execute the process
 	bool runNextReadyProcess();
 	
-	void run_round_robin();
 	void display_results()const;
 	bool allProcessesFinshed();
+
+	void manageNoRunningProcess();
+	void manageRunningProcess();
+
 };
 
 #endif
