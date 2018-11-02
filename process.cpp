@@ -88,14 +88,16 @@ bool Process::nextFrameLoaded()
 	return false;
 }
 
-void Process::startLoadFrame(int t)
-{ 
-	m_start_loading_frame = t; 
-	m_loading_frame = true;
+void Process::addNextFrame()
+{
+	v_loaded_frames.push_back(v_frames[m_next_frame]);
 }
+
 void Process::issuePageFault(int t)
 {
 	v_page_faults.push_back(t);
+	m_start_loading_frame = t; 
+	m_loading_frame = true;
 }
 void Process::display_page_faults()const
 {

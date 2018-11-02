@@ -12,6 +12,7 @@
 #include <vector>
 #include <list>
 #include <string>
+#include <unistd.h>
 
 #include "process.hpp"
 
@@ -38,7 +39,6 @@ private:
 	int m_loading_frame_time;
 	//time to run a single frame
 	int m_running_frame_time;
-
 public:
 	System(std::string fileName1, std::string fileName2, std::string fileName3="", std::string fileName4="");
 	~System();
@@ -53,7 +53,6 @@ public:
 	//return false if there is no process ready to execute
 	//otherwise return true and execute the process
 	bool runNextReadyProcess();
-
 	
 	void run_round_robin();
 	void display_results()const;

@@ -70,6 +70,7 @@ void System::updateReadyQueue()
 				q_ready.push_back(&v_processes[i]);
 				v_processes[i].setReady(true);
 				v_processes[i].stopLoadingFrame();
+				v_processes[i].addNextFrame();
 			}
 		}
 	}
@@ -90,19 +91,15 @@ bool System::allProcessesFinshed()
 
 bool System::runNextReadyProcess()
 {
-	//if the queue is NOT empty
-	if(!q_ready.empty())
-	{
-		m_start_quantum = m_t;
-		//run the first element of the ready queue
-		m_running_process = q_ready.front()->getId();
-		q_ready.pop_front();
-		//run it
-		v_processes[m_running_process].executeNextFrame(m_t);
-		return true;
-	}
-	else
-		return false;
+	m_start_quantum = m_t;
+	//run the first element of the ready queue
+	m_running_process = q_ready.front()->getId();
+	std::cout << " run=" << m_running_process;
+	q_ready.pop_front();
+	//run it
+	v_processes[m_running_process].executeNextFrame(m_t);
+	return false;//to avoid the warning
+
 }
 
 void System::simple_RR()
@@ -110,19 +107,20 @@ void System::simple_RR()
 	for(uint i = 0 ; i < v_processes.size() ; ++i)
 	{
 		// //load all the frames for each process
-		v_processes[i].load_all_frames();
+		//v_processes[i].load_all_frames();
 
 		//put all the processes in the ready queue in the order of their index
-		q_ready.push_back(&v_processes[i]);
+		//q_ready.push_back(&v_processes[i]);
 	}
-	
+	/*
 	m_start_quantum = 0;
 	m_running_process = q_ready.front()->getId();
 	q_ready.pop_front();
-
+	*/
 	while(!allProcessesFinshed())
 	{
-		//updateReadyQueue();
+		updateReadyQueue();
+		std::cout <<"t="<< m_t;
 
 		//if there is a process running at the moment
 		if(m_running_process != -1)
@@ -130,41 +128,43 @@ void System::simple_RR()
 			//if its job is over
 			if(v_processes[m_running_process].is_over())
 			{
-				std::cout << "end of " << m_running_process << std::endl;
+				std::cout << " end of " << m_running_process;
 				//set its exit time
 				v_processes[m_running_process].setFinish(m_t);
-				
-				//run the next process if there is one ready				
-				if(!runNextReadyProcess())
-				{
-					//if no process available stay idle
+				//if there is ready procesxes waiting			
+				if(!q_ready.empty())
+					runNextReadyProcess();
+				else//if no process available : stay idle
 					m_running_process = -1;
-				}
+				
 			}
 			//check if this process has expired its time quantum
 			else if(m_start_quantum + m_time_quantum <= m_t)
 			{
+				std::cout <<" time quantum over";
+
 				//put this process back in the ready queue
 				q_ready.push_back(&v_processes[m_running_process]);
 
-				//run the next process if there is one ready
-				if(!runNextReadyProcess())
-				{
-					//if no process available stay idle
+				//if there is ready procesxes waiting			
+				if(!q_ready.empty())
+					runNextReadyProcess();
+				else//if no process available : stay idle
 					m_running_process = -1;
-				}
 			}
 			//if the next frame is already loaded the current process can run normally
 			else if(v_processes[m_running_process].nextFrameLoaded())
 			{
+				std::cout <<" run the same again";
+
 				v_processes[m_running_process].executeNextFrame(m_t);
 				//running process keep the same value
 			}
 			else//this process doesn't have the next frame in memory
 			{
+				std::cout <<" page fault 1";
 				//issue a page fault and start loading this frame
 				v_processes[m_running_process].issuePageFault(m_t);
-				v_processes[m_running_process].startLoadFrame(m_t);
 				//stop running this process
 				m_running_process = -1;
 			}
@@ -172,7 +172,10 @@ void System::simple_RR()
 		if(m_running_process == -1)//there is no process running
 		{
 			//run the next process if there is one ready
-			if(!runNextReadyProcess())
+			//if there is ready procesxes waiting			
+			if(!q_ready.empty())
+				runNextReadyProcess();
+			else//if no process available
 			{
 				//if no process available check for page fault 
 				//check for page fault
@@ -181,9 +184,10 @@ void System::simple_RR()
 					//if this process is not already loading a page AND if this process is NOT finished
 					if(!v_processes[i].is_loading_frame() && v_processes[i].getFinish() == -1)
 					{
+						std::cout <<" page fault 2";
+
 						//issue a page fault and start loading this frame
 						v_processes[i].issuePageFault(m_t);
-						v_processes[m_running_process].startLoadFrame(m_t);
 					}
 				}
 				//and stay idle
@@ -192,83 +196,13 @@ void System::simple_RR()
 
 
 		}
+		std::cout << std::endl;
 		m_t++;
+		usleep(100000);
 	}
 }
 
-void System::run_round_robin()
-{
-	//put in the ready queue all the processes which finish loading their current frame
-	updateReadyQueue();
 
-
-	while(m_t <= 40)
-	{
-		//if there is a process running at the moment
-		if(m_running_process != -1)
-		{
-			//check if its job is over
-			if(v_processes[m_running_process].is_over())
-			{
-				//set its exit time
-				v_processes[m_running_process].setFinish(m_t);
-				//stop running this process
-				m_running_process = -1;
-			}
-			//check if this process has expired its time quantum
-			else if(m_start_quantum + m_time_quantum <= m_t)
-			{
-				//put this process back in the ready queue
-				q_ready.push_back(&v_processes[m_running_process]);
-				m_running_process = -1;
-			}
-			//else check if it has the next frame to run already loaded in memory
-			else if(v_processes[m_running_process].nextFrameLoaded())
-			{
-				//continue running this process
-				v_processes[m_running_process].executeNextFrame(m_t);
-				//do not issue page fault for the other processes here !
-			}
-			else//this process doesn't have the next frame in memory
-			{
-				//issue a page fault and start loading this frame
-				v_processes[m_running_process].issuePageFault(m_t);
-				v_processes[m_running_process].startLoadFrame(m_t);
-				//stop running this process
-				m_running_process = -1;
-			}
-		}
-		//not a else because if a process issue a page fault no process is actually running
-		//there is no process currently running
-		if(m_running_process == -1)
-		{
-			if(!q_ready.empty())
-			{
-				//run the first element of the ready queue
-				m_running_process = q_ready.front()->getId();
-				m_start_quantum = m_t;
-				q_ready.pop_front();
-			}
-			else//no process have their next frame ready
-			{
-				m_running_process = -1;
-				//check for page fault
-				for(uint i = 0 ; i < v_processes.size() ; ++i)
-				{
-					//if this process is not already loading a page
-					if(!v_processes[i].is_loading_frame() && v_processes[i].is_over())
-					{
-						//issue a page fault and start loading this frame
-						v_processes[i].issuePageFault(m_t);
-						v_processes[m_running_process].startLoadFrame(m_t);
-					}
-				}
-			}	
-		}
-		//increment time for the next loop 
-		m_t++;
-	}
-}
 
 void System::display_results()const
 {

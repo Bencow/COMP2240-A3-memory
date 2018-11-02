@@ -54,18 +54,16 @@ public:
 	//test function
 	void load_all_frames();
 
-	void executeNextFrame(int t);
-	void tryExecuteNextFrame(int t);
+	
 
 	int getId()const{ return m_id; }
-	
+
 	std::string getName()const { return m_name; }
 
 	void setFinish(int val){ m_finish = val; }
 	int getFinish() const { return m_finish; }
 
 	//accessors of m_loading_frame
-	void startLoadFrame(int t);
 	void stopLoadingFrame(){ m_loading_frame = false; }
 	bool is_loading_frame()const { return m_loading_frame; }
 	int getStartLoadFrame() const { return m_start_loading_frame; }
@@ -79,6 +77,11 @@ public:
 
 	//return true if the next page is already loaded = if the 
 	bool nextFrameLoaded();
+	void executeNextFrame(int t);
+	//this function is called when a frame has finished to be loaded
+	//add the m_next_frame to the v_loaded_frames
+	void addNextFrame();
+
 
 	//return true if the process has finished its task
 	bool is_over();
