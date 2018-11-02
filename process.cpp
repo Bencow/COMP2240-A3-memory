@@ -52,7 +52,7 @@ void Process::display_frames()const
 
 void Process::load_all_frames()
 {
-	for(uint i = 0 ; i < 5 ; ++i)
+	for(uint i = 0 ; i < 6 ; ++i)
 	{
 		v_loaded_frames.push_back(i);
 	}
@@ -80,12 +80,17 @@ bool Process::is_over()
 }
 bool Process::nextFrameLoaded()
 {
+	std::cout << m_next_frame;
 	for(uint i = 0 ; i < v_loaded_frames.size() ; ++i)
 	{
+		std::cout << " " << v_loaded_frames[i];
 		//if the next frame to load is already loaded in memory
-		if((int)m_next_frame == v_loaded_frames[i])
+		if(m_next_frame == v_loaded_frames[i])
+		{
 			return true;
+		}
 	}
+	std::cout <<"aie" << std::endl;
 	return false;
 }
 

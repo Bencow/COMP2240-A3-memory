@@ -12,6 +12,11 @@ don't mention the destrctor in the .cpp cause linking errors !
 Prototyping:
 DONE -read files and load the frames into the processes 
 DONE- run round robin without frame conditions
+- load all frames at the beginning
+	add the condition if the frame is loaded
+	don't implement the loading of frames yet
+	-> should have the same output as previous prototype
+
 
 
 - add the condition if the frame is loaded in memory run the process otherwise stay idle

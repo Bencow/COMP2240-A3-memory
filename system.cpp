@@ -107,7 +107,7 @@ void System::simple_RR()
 	for(uint i = 0 ; i < v_processes.size() ; ++i)
 	{
 		// //load all the frames for each process
-		// v_processes[i].load_all_frames();
+		v_processes[i].load_all_frames();
 
 		//put all the processes in the ready queue in the order of their index
 		q_ready.push_back(i);
@@ -119,12 +119,15 @@ void System::simple_RR()
 
 	while(!allProcessesFinshed())
 	{
+		//updateReadyQueue();
+
 		//if there is a process running at the moment
 		if(m_running_process != -1)
 		{
 			//if its job is over
 			if(v_processes[m_running_process].is_over())
 			{
+				std::cout << "end of " << m_running_process << std::endl;
 				//set its exit time
 				v_processes[m_running_process].setFinish(m_t);
 				
@@ -134,7 +137,6 @@ void System::simple_RR()
 					//if no process available stay idle
 					m_running_process = -1;				
 				}
-				
 			}
 			//check if this process has expired its time quantum
 			else if(m_start_quantum + m_time_quantum <= m_t)
@@ -149,19 +151,43 @@ void System::simple_RR()
 					m_running_process = -1;
 				}
 			}
-			else//the current process can run normally
+			//if the next frame is already loaded the current process can run normally
+			else if(v_processes[m_running_process].nextFrameLoaded())
 			{
+				std::cout << "hey" << std::endl;
 				v_processes[m_running_process].executeNextFrame(m_t);
 			}
+			else//this process doesn't have the next frame in memory
+			{
+				//issue a page fault and start loading this frame
+				v_processes[m_running_process].issuePageFault(m_t);
+				v_processes[m_running_process].startLoadFrame(m_t);
+				//stop running this process
+				m_running_process = -1;
+			}
 		}
-		else//there is no process running
+		if(m_running_process == -1)//there is no process running
 		{
 			//run the next process if there is one ready
 			if(!runNextReadyProcess())
 			{
-				//if no process available stay idle
+				//if no process available check for page fault 
+				//check for page fault
+				for(uint i = 0 ; i < v_processes.size() ; ++i)
+				{
+					//if this process is not already loading a page
+					if(!v_processes[i].is_loading_frame() && v_processes[i].is_over())
+					{
+						//issue a page fault and start loading this frame
+						v_processes[i].issuePageFault(m_t);
+						v_processes[m_running_process].startLoadFrame(m_t);
+					}
+				}
+				//and stay idle
 				m_running_process = -1;
 			}
+
+
 		}
 		m_t++;
 	}

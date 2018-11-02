@@ -20,7 +20,8 @@ class Process
 private:
 
 	std::vector<int> v_frames;
-	std::vector<int> v_loaded_frames;
+	//stores indices of the v_frame vector
+	std::vector<size_t> v_loaded_frames;
 	std::string m_name;
 	std::vector<int> v_page_faults;
 	std::vector<int> v_execution;
