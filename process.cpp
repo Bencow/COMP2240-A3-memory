@@ -68,10 +68,6 @@ void Process::executeNextFrame(int t)
 	v_execution.push_back(v_frames[m_next_frame]);
 	v_execution_time.push_back(t);
 
-	std::cout << " id=" <<m_id;
-	
-
-
 	//LRU
 	//to know the index of the next_frame in v_loaded_frame 
 	for(uint i = 0 ; i < v_loaded_frames.size() ; ++i)
@@ -82,7 +78,6 @@ void Process::executeNextFrame(int t)
 		}
 	}
 	v_last_use.at(index) = t;
-	std::cout << "yo";
 
 	//increment the next frame to execute
 	m_next_frame++;
@@ -113,6 +108,26 @@ void Process::addNextFrame()
 	v_loaded_frames.push_back(v_frames[m_next_frame]);
 	v_last_use.push_back(0);
 	//v_use_bit.push_back(false);
+}
+
+void Process::removeFrame()
+{
+	//LRU
+	//find the last used frame
+	int min;
+	int index_min;
+	for(uint i = 0 ; i < v_last_use.size() ; ++i)
+	{
+		if(min > v_last_use[i])
+		{
+			min = v_last_use[i];
+			index_min = i;
+		}
+	}
+	//remove this frame
+	v_loaded_frames.erase(v_loaded_frames.begin()+index_min);
+	v_last_use.erase(v_last_use.begin()+index_min);
+
 }
 
 void Process::issuePageFault(int t)

@@ -85,6 +85,9 @@ public:
 	//this function is called when a frame has finished to be loaded
 	//add the m_next_frame to the v_loaded_frames
 	void addNextFrame();
+	void removeFrame();
+
+	int getNumberFrameLoaded()const{ return v_loaded_frames.size(); }
 
 
 	//return true if the process has finished its task

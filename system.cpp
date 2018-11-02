@@ -45,7 +45,6 @@ System::System(std::string fileName1, std::string fileName2, std::string fileNam
 	m_loading_frame_time = 6;//same for all the cases
 	m_running_frame_time = 1;
 	m_memory_process = m_number_frame/m_number_process;
-	std::cout << m_memory_process;
 }
 
 System::~System()
@@ -137,20 +136,16 @@ void System::manageRunningProcess()
 		}
 		else
 		{
-			/*
 			//if there is enough memory to load this frame
-			if()
+			if(v_processes[m_running_process].getNumberFrameLoaded() >= m_memory_process)
 			{
-				std::cout <<" page fault 3";
-				//issue a page fault and start loading this frame
-				v_processes[m_running_process].issuePageFault(m_t);
-				//stop running this process
-				m_running_process = -1;
+				v_processes[m_running_process].removeFrame();
 			}
-			else
-			{
-
-			}*/
+			std::cout <<" page fault 3";
+			//issue a page fault and start loading this frame
+			v_processes[m_running_process].issuePageFault(m_t);
+			//stop running this process
+			m_running_process = -1;
 		}
 		
 		//if there is ready processes waiting			
@@ -171,11 +166,17 @@ void System::manageRunningProcess()
 	}
 	else//this process doesn't have the next frame in memory
 	{
-		std::cout <<" page fault 1";
+		//if there is enough memory to load this frame
+		if(v_processes[m_running_process].getNumberFrameLoaded() >= m_memory_process)
+		{
+			v_processes[m_running_process].removeFrame();
+		}
+		std::cout <<" page fault 3";
 		//issue a page fault and start loading this frame
 		v_processes[m_running_process].issuePageFault(m_t);
 		//stop running this process
 		m_running_process = -1;
+		
 	}
 }
 void System::manageNoRunningProcess()
@@ -193,8 +194,12 @@ void System::manageNoRunningProcess()
 			//if this process is not already loading a page AND if this process is NOT finished
 			if(!v_processes[i].is_loading_frame() && v_processes[i].getFinish() == -1)
 			{
+				//if there is enough memory to load this frame
+				if(v_processes[i].getNumberFrameLoaded() >= m_memory_process)
+				{
+					v_processes[i].removeFrame();
+				}
 				std::cout <<" page fault 2";
-
 				//issue a page fault and start loading this frame
 				v_processes[i].issuePageFault(m_t);
 			}
@@ -222,7 +227,7 @@ void System::simple_RR()
 		}
 		std::cout << std::endl;
 		m_t++;
-	usleep(100000);
+	// usleep(100000);
 	}
 }
 
@@ -238,7 +243,7 @@ void System::display_results()const
 				  << v_processes[i].getNumberPageFault() << "         ";
 		v_processes[i].display_page_faults();
 		std::cout <<"           ";
-		v_processes[i].display_execution();
+		//v_processes[i].display_execution();
 		std::cout << std::endl;
 	}
 }
