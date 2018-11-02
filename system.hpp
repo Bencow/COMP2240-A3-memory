@@ -52,6 +52,7 @@ public:
 	bool runNextReadyProcess();
 	void run_round_robin();
 	void display_results()const;
+	bool allProcessesFinshed();
 };
 
 #endif

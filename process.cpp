@@ -36,7 +36,7 @@ Process::Process(std::string fileName)
 	m_loading_frame = false;
 	m_blocked = false;
 	m_ready = false;
-
+	m_finish = -1;
 }
 Process::~Process()
 {}
@@ -66,11 +66,13 @@ void Process::executeNextFrame(int t)
 	//increment the next frame to execute
 	m_next_frame++;
 }
+void Process::tryExecuteNextFrame(int t)
+{
 
+}
 
 bool Process::is_over()
 {
-	//size of frame minus 1 because m_next_frame start at zero !s
 	if(m_next_frame >= v_frames.size())
 		return true;
 	else

@@ -11,13 +11,12 @@ don't mention the destrctor in the .cpp cause linking errors !
 
 Prototyping:
 DONE -read files and load the frames into the processes 
-- load all the frames for each process and run round robin
-- run RR with dynamic rame loading
+DONE- run round robin without frame conditions
 
 
+- add the condition if the frame is loaded in memory run the process otherwise stay idle
 
 
+- run RR with dynamic frame loading
 
 
-
-L

@@ -34,11 +34,10 @@ private:
 	bool m_loading_frame;
 	//may be useless...
 	bool m_blocked;
-	//time when the last time
-	int start_executing;
 	//true if the process has already loaded the next frame to execute
 	bool m_ready;
-	//store the time when the process finished its task
+	//store the time when the process finished its task 
+	// = -1 if the process is not finished
 	int m_finish;
 
 public:
@@ -51,6 +50,7 @@ public:
 	void load_all_frames();
 
 	void executeNextFrame(int t);
+	void tryExecuteNextFrame(int t);
 
 
 	std::string getName()const { return m_name; }
