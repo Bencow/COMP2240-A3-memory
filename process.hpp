@@ -21,6 +21,10 @@ private:
 
 	std::vector<int> v_frames;
 	std::vector<int> v_loaded_frames;
+	std::string m_name;
+	std::vector<int> v_page_faults;
+	std::vector<int> v_execution;
+	std::vector<int> v_execution_time;
 	
 	//next frame to execute, index of the vector v_frames
 	size_t m_next_frame;
@@ -32,8 +36,10 @@ private:
 	bool m_blocked;
 	//time when the last time
 	int start_executing;
+	//true if the process has already loaded the next frame to execute
 	bool m_ready;
-
+	//store the time when the process finished its task
+	int m_finish;
 
 public:
 	Process(std::string fileName);
@@ -41,24 +47,39 @@ public:
 
 	//test function for see if the files have been read correctly
 	void display_frames()const;
-
 	//test function
 	void load_all_frames();
 
+	void executeNextFrame(int t);
+
+
+	std::string getName()const { return m_name; }
+
+	void setFinish(int val){ m_finish = val; }
+	int getFinish() const { return m_finish; }
+
+	//accessors of m_loading_frame
 	void startLoadFrame(int t);
 	void stopLoadingFrame(){ m_loading_frame = false; }
 	bool is_loading_frame()const { return m_loading_frame; }
-	
 	int getStartLoadFrame() const { return m_start_loading_frame; }
 
-
-
+	//accesors of m_ready
 	bool getReady() const { return m_ready; }
 	void setReady(bool val){ m_ready = val; }
 
-	bool is_over();
+	void issuePageFault(int t);
+	uint getNumberPageFault() const { return v_page_faults.size(); }
+
+	//return true if the next page is already loaded = if the 
 	bool nextFrameLoaded();
+
+	//return true if the process has finished its task
+	bool is_over();
 	
+	void display_page_faults()const;
+	void display_execution()const;
+
 };
 
 

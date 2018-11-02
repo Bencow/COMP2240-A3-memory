@@ -48,9 +48,10 @@ public:
 
 	//put in the ready queue the processes who have finished to load their current frame
 	void updateReadyQueue();
+	void simple_RR();
+	bool runNextReadyProcess();
 	void run_round_robin();
-
-	
+	void display_results()const;
 };
 
 #endif
