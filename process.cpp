@@ -103,7 +103,7 @@ void Process::display_page_faults()const
 {
 	for(uint i = 0 ; i < v_page_faults.size() ; ++i)
 	{
-		std::cout << v_page_faults[i] << "               ";
+		std::cout << v_page_faults[i] << " ";
 	}
 }
 void Process::display_execution()const

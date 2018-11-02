@@ -91,15 +91,19 @@ bool System::allProcessesFinshed()
 
 bool System::runNextReadyProcess()
 {
-	m_start_quantum = m_t;
 	//run the first element of the ready queue
 	m_running_process = q_ready.front()->getId();
+	
 	std::cout << " run=" << m_running_process;
+	//remove this process from the ready queue
 	q_ready.pop_front();
-	//run it
+	v_processes[m_running_process].setReady(false);
+	
+	//run the next frame of this process
+	m_start_quantum = m_t;
 	v_processes[m_running_process].executeNextFrame(m_t);
+	
 	return false;//to avoid the warning
-
 }
 
 void System::simple_RR()
@@ -145,10 +149,14 @@ void System::simple_RR()
 
 				//put this process back in the ready queue
 				q_ready.push_back(&v_processes[m_running_process]);
+				v_processes[m_running_process].setReady(true);
 
-				//if there is ready procesxes waiting			
+				//if there is ready processes waiting			
 				if(!q_ready.empty())
+				{
+					std::cout << " tada";
 					runNextReadyProcess();
+				}
 				else//if no process available : stay idle
 					m_running_process = -1;
 			}
@@ -193,12 +201,10 @@ void System::simple_RR()
 				//and stay idle
 				m_running_process = -1;
 			}
-
-
 		}
 		std::cout << std::endl;
 		m_t++;
-		usleep(100000);
+		//usleep(100000);
 	}
 }
 
@@ -212,10 +218,10 @@ void System::display_results()const
 	{
 		std::cout << i+1 << "    " 
 				  << v_processes[i].getName() << "      "
-				  << v_processes[i].getFinish() << "               "
+				  << v_processes[i].getFinish() << "            "
 				  << v_processes[i].getNumberPageFault() << "         ";
 		v_processes[i].display_page_faults();
-		v_processes[i].display_execution();
+		//v_processes[i].display_execution();
 		std::cout << std::endl;
 	}
 }
