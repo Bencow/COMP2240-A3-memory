@@ -18,13 +18,16 @@
 class Process
 {
 private:
-
+	//sequence of frames to execute
 	std::vector<int> v_frames;
-	//stores indices of the v_frame vector
-	std::vector<size_t> v_loaded_frames;
+	//stores the number of frame loaded in memory 
+	std::vector<int> v_loaded_frames;
 	std::string m_name;
+	//stores the time of all the page faults issued by this process
 	std::vector<int> v_page_faults;
+	//stores the frames already executed by the process
 	std::vector<int> v_execution;
+	//stores the time when this process was running
 	std::vector<int> v_execution_time;
 	
 	//next frame to execute, index of the vector v_frames

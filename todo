@@ -16,7 +16,9 @@ DONE- run round robin without frame conditions
 	add the condition if the frame is loaded
 	don't implement the loading of frames yet
 	-> should have the same output as previous prototype
-
+Problems:
+	-why the process 4 has m_next_frame = 7 at the end of the program?
+	DONE -all processes issue a fault time at the end
 
 
 - add the condition if the frame is loaded in memory run the process otherwise stay idle

@@ -52,7 +52,7 @@ void Process::display_frames()const
 
 void Process::load_all_frames()
 {
-	for(uint i = 0 ; i < 6 ; ++i)
+	for(uint i = 1 ; i < 6 ; ++i)
 	{
 		v_loaded_frames.push_back(i);
 	}
@@ -66,10 +66,6 @@ void Process::executeNextFrame(int t)
 	//increment the next frame to execute
 	m_next_frame++;
 }
-void Process::tryExecuteNextFrame(int t)
-{
-
-}
 
 bool Process::is_over()
 {
@@ -80,17 +76,14 @@ bool Process::is_over()
 }
 bool Process::nextFrameLoaded()
 {
-	std::cout << m_next_frame;
 	for(uint i = 0 ; i < v_loaded_frames.size() ; ++i)
 	{
-		std::cout << " " << v_loaded_frames[i];
 		//if the next frame to load is already loaded in memory
-		if(m_next_frame == v_loaded_frames[i])
+		if(v_frames.at(m_next_frame) == v_loaded_frames[i])
 		{
 			return true;
 		}
 	}
-	std::cout <<"aie" << std::endl;
 	return false;
 }
 
@@ -107,13 +100,19 @@ void Process::display_page_faults()const
 {
 	for(uint i = 0 ; i < v_page_faults.size() ; ++i)
 	{
-		std::cout << v_page_faults[i] << " ";
+		std::cout << v_page_faults[i] << "               ";
 	}
 }
 void Process::display_execution()const
 {
-	for(uint i = 0 ; i < v_execution.size() ; ++i)
+	for(uint i = 0 ; i < v_execution_time.size() ; ++i)
 	{
 		std::cout << v_execution_time[i] << " ";
+	}
+	std::cout << "          ";
+	for(uint i = 0 ; i < v_execution.size() ; ++i)
+	{
+		std::cout << v_execution[i] << " ";
+
 	}
 }
