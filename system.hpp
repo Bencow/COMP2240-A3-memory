@@ -49,8 +49,10 @@ private:
 	//time to run a single frame
 	int m_running_frame_time;
 public:
-	System(std::string fileName1, std::string fileName2, std::string fileName3="", std::string fileName4="");
+	System(int frame_number, int quantum_size);
 	~System();
+
+	void readFiles(std::string fileName1, std::string fileName2, std::string fileName3="", std::string fileName4="");
 
 	//test function to see if the files have been read correctly
 	void display_processes_frames()const;

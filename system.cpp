@@ -9,8 +9,26 @@
 
 
 
-System::System(std::string fileName1, std::string fileName2, std::string fileName3, std::string fileName4)
+System::System(int frame_number, int quantum_size)
 {	
+
+	//use main parameter after !
+	m_time_quantum = quantum_size;
+	m_number_frame = frame_number;
+
+	m_start_quantum = -1;
+	m_t = 0;
+	m_running_process = -1;
+	m_loading_frame_time = 6;//same for all the cases
+	m_running_frame_time = 1;
+
+}
+
+System::~System()
+{}
+
+void System::readFiles(std::string fileName1, std::string fileName2, std::string fileName3, std::string fileName4)
+{
 	int i = 0;
 	//Call all the constructor of all the processes passing the file name as parameter
 	Process p1(fileName1, i);
@@ -35,20 +53,8 @@ System::System(std::string fileName1, std::string fileName2, std::string fileNam
 		v_processes.push_back(p4);		
 		m_number_process = 4;
 	}
-	//use main parameter after !
-	m_time_quantum = 3;
-	m_number_frame = 30;
-
-	m_start_quantum = -1;
-	m_t = 0;
-	m_running_process = -1;
-	m_loading_frame_time = 6;//same for all the cases
-	m_running_frame_time = 1;
 	m_memory_process = m_number_frame/m_number_process;
 }
-
-System::~System()
-{}
 
 void System::display_processes_frames()const
 {

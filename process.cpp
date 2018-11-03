@@ -21,7 +21,7 @@ Process::Process(std::string fileName, int id)
 
 	in >> buffer;
 	if(buffer != "begin")
-		std::cout << fileName << " is not formatted in the right way (should start by begin)" << std::endl;
+		std::cout << fileName << " is not formatted in the right way (must start by begin)" << std::endl;
 
 	in >> buffer;
 	while(buffer != "end")
