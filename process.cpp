@@ -183,10 +183,14 @@ void Process::issuePageFault(int t)
 }
 void Process::display_page_faults()const
 {
+	std::cout << "{";
 	for(uint i = 0 ; i < v_page_faults.size() ; ++i)
 	{
-		std::cout << v_page_faults[i] << " ";
+		std::cout << v_page_faults[i];
+		if(i != v_page_faults.size() -1)
+			std::cout << ", ";//display that except the last time
 	}
+	std::cout << "}";
 }
 void Process::display_execution()const
 {
@@ -194,10 +198,11 @@ void Process::display_execution()const
 	{
 		std::cout << v_execution_time[i] << " ";
 	}
-	std::cout << "          ";
+	std::cout << "         ";
 	for(uint i = 0 ; i < v_execution.size() ; ++i)
 	{
 		std::cout << v_execution[i] << " ";
 
 	}
+
 }

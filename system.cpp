@@ -90,12 +90,11 @@ bool System::allProcessesFinshed()
 	return true;
 }
 
-bool System::runNextReadyProcess()
+void System::runNextReadyProcess()
 {
 	//run the first element of the ready queue
 	m_running_process = q_ready.front()->getId();
 	
-	std::cout << " run=" << m_running_process;
 	//remove this process from the ready queue
 	q_ready.pop_front();
 	v_processes[m_running_process].setReady(false);
@@ -103,15 +102,12 @@ bool System::runNextReadyProcess()
 	//run the next frame of this process
 	m_start_quantum = m_t;
 	v_processes[m_running_process].executeNextFrame(m_t);
-
-	return false;//to avoid the warning
 }
 void System::manageRunningProcess()
 {
 	//if its job is over
 	if(v_processes[m_running_process].is_over())
 	{
-		std::cout << " end of " << m_running_process;
 		//set its exit time
 		v_processes[m_running_process].setFinish(m_t);
 		//if there is ready processes waiting			
@@ -119,14 +115,10 @@ void System::manageRunningProcess()
 			runNextReadyProcess();
 		else//if no process available : stay idle
 			m_running_process = -1;
-		
 	}
 	//check if this process has expired its time quantum
 	else if(m_start_quantum + m_time_quantum <= m_t)
 	{
-		std::cout <<" time quantum over";
-
-		
 		//check if this process can run the next frame 
 		if(v_processes[m_running_process].nextFrameLoaded())
 		{
@@ -134,20 +126,18 @@ void System::manageRunningProcess()
 			q_ready.push_back(&v_processes[m_running_process]);
 			v_processes[m_running_process].setReady(true);
 		}
-		else
+		else//it can't run the next frame
 		{
 			//if there is enough memory to load this frame
 			if(v_processes[m_running_process].getNumberFrameLoaded() >= m_memory_process)
 			{
 				v_processes[m_running_process].removeFrame(m_LRU);
 			}
-			std::cout <<" page fault 3";
 			//issue a page fault and start loading this frame
 			v_processes[m_running_process].issuePageFault(m_t);
 			//stop running this process
 			m_running_process = -1;
 		}
-		
 		//if there is ready processes waiting			
 		if(!q_ready.empty())
 		{
@@ -159,7 +149,6 @@ void System::manageRunningProcess()
 	//if the next frame is already loaded the current process can run normally
 	else if(v_processes[m_running_process].nextFrameLoaded())
 	{
-		std::cout <<" run the same again";
 		v_processes[m_running_process].executeNextFrame(m_t);
 		//running process keep the same value
 	}
@@ -170,7 +159,6 @@ void System::manageRunningProcess()
 		{
 			v_processes[m_running_process].removeFrame(m_LRU);
 		}
-		std::cout <<" page fault 3";
 		//issue a page fault and start loading this frame
 		v_processes[m_running_process].issuePageFault(m_t);
 		//stop running this process
@@ -197,7 +185,6 @@ void System::manageNoRunningProcess()
 				{
 					v_processes[i].removeFrame(m_LRU);
 				}
-				std::cout <<" page fault 2";
 				//issue a page fault and start loading this frame
 				v_processes[i].issuePageFault(m_t);
 			}
@@ -207,14 +194,13 @@ void System::manageNoRunningProcess()
 	}
 }
 
-void System::simple_RR(bool LRU)
+void System::run_round_robin(bool LRU)
 {
 	//if LRU is false run clock !
 	m_LRU = LRU;
 	while(!allProcessesFinshed())
 	{
 		updateReadyQueue();
-		std::cout <<"t="<< m_t;
 
 		//if there is a process running at the moment
 		if(m_running_process != -1)
@@ -225,7 +211,6 @@ void System::simple_RR(bool LRU)
 		{
 			manageNoRunningProcess();
 		}
-		std::cout << std::endl;
 		m_t++;
 	// usleep(100000);
 	}
@@ -233,17 +218,16 @@ void System::simple_RR(bool LRU)
 
 void System::display_results()const
 {
-	std::cout << "PID  Process Name      Turnaround Time  # Faults  Faults Times     execution trace    " << std::endl;
+	std::cout << "PID   Process Name      Turnaround Time     #Faults   Fault Times" << std::endl;
 	//std::cout << "PID  Process Name      Turnaround Time  execution trace" << std::endl;
 	for(uint i = 0 ; i < v_processes.size() ; ++i)
 	{
-		std::cout << i+1 << "    " 
+		std::cout << i+1 << "     " 
 				  << v_processes[i].getName() << "      "
-				  << v_processes[i].getFinish() << "            "
-				  << v_processes[i].getNumberPageFault() << "         ";
+				  << v_processes[i].getFinish() << "                "
+				  << v_processes[i].getNumberPageFault() << "        ";
 		v_processes[i].display_page_faults();
 		std::cout <<"           ";
-		//v_processes[i].display_execution();
 		std::cout << std::endl;
 	}
 }

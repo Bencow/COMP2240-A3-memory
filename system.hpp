@@ -20,9 +20,10 @@
 class System
 {
 private:
+	//Only place where all the processes are stored
 	std::vector<Process> v_processes;
 	//the elements of the ready queue point on elements of the v_processes vector
-	//ready queue stores processes which are able to rn the next frame
+	//ready queue stores processes which are able to run the next frame
 	std::list<Process*> q_ready;
 	//time quantum for round robin
 	int m_time_quantum;
@@ -35,7 +36,7 @@ private:
 	int m_memory_process;
 
 	int m_number_process;
-
+	//true if this system have to use LRU
 	bool m_LRU;
 
 	//current time
@@ -51,23 +52,35 @@ public:
 	System(std::string fileName1, std::string fileName2, std::string fileName3="", std::string fileName4="");
 	~System();
 
-	//test function for see if the files have been read correctly
+	//test function to see if the files have been read correctly
 	void display_processes_frames()const;
-
-	//put in the ready queue the processes who have finished to load their current frame
+	
+	//Pre condition: called at the beginning of each loop
+	//Post condition: put the processes who have finished to load their current frame in the ready queue 
 	void updateReadyQueue();
-	void simple_RR(bool LRU);
-	
-	//return false if there is no process ready to execute
-	//otherwise return true and execute the process
-	bool runNextReadyProcess();
-	
-	void display_results()const;
-	bool allProcessesFinshed();
 
+	//Pre condition: true if the program has to use LRU algorithm, false Clock algo 
+	//Post condition: main loop of the program, run the entire execution
+	void run_round_robin(bool LRU);
+
+	//Pre condition: called by run_round_robin
+	//Post condition: manage the case where at t-1 the processor was running another process
 	void manageNoRunningProcess();
+	//Pre condition: called by run_round_robin
+	//Post condition: manage the case where at t-1 the processor was idle
 	void manageRunningProcess();
 
+	//Pre condition: ready queue must not be empty
+	//Post condition: run the next frame of the first element of the ready queue
+	void runNextReadyProcess();
+
+	//Pre condition: none
+	//Post condition: return true if all the processes have finished their job
+	bool allProcessesFinshed();
+
+	//Pre condition: having run the simulation before
+	//Post condition: display the results
+	void display_results()const;
 };
 
 #endif
