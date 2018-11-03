@@ -139,7 +139,7 @@ void System::manageRunningProcess()
 			//if there is enough memory to load this frame
 			if(v_processes[m_running_process].getNumberFrameLoaded() >= m_memory_process)
 			{
-				v_processes[m_running_process].removeFrame();
+				v_processes[m_running_process].removeFrame(m_LRU);
 			}
 			std::cout <<" page fault 3";
 			//issue a page fault and start loading this frame
@@ -168,7 +168,7 @@ void System::manageRunningProcess()
 		//if there is enough memory to load this frame
 		if(v_processes[m_running_process].getNumberFrameLoaded() >= m_memory_process)
 		{
-			v_processes[m_running_process].removeFrame();
+			v_processes[m_running_process].removeFrame(m_LRU);
 		}
 		std::cout <<" page fault 3";
 		//issue a page fault and start loading this frame
@@ -195,7 +195,7 @@ void System::manageNoRunningProcess()
 				//if there is enough memory to load this frame
 				if(v_processes[i].getNumberFrameLoaded() >= m_memory_process)
 				{
-					v_processes[i].removeFrame();
+					v_processes[i].removeFrame(m_LRU);
 				}
 				std::cout <<" page fault 2";
 				//issue a page fault and start loading this frame

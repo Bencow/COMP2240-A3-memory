@@ -27,6 +27,8 @@ private:
 	std::vector<int> v_last_use;
 	//CLOCK: 
 	std::vector<bool> v_use_bit;
+	size_t m_clock_position;
+
 	//name of the process
 	std::string m_name;
 	//stores the time of all the page faults issued by this process
@@ -85,7 +87,7 @@ public:
 	//this function is called when a frame has finished to be loaded
 	//add the m_next_frame to the v_loaded_frames
 	void addNextFrame();
-	void removeFrame();
+	void removeFrame(bool LRU);
 
 	int getNumberFrameLoaded()const{ return v_loaded_frames.size(); }
 

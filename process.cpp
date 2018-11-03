@@ -38,6 +38,7 @@ Process::Process(std::string fileName, int id)
 	m_blocked = false;
 	m_ready = false;
 	m_finish = -1;
+	m_clock_position = 0;
 }
 Process::~Process()
 {}
@@ -136,25 +137,40 @@ void Process::removeFrame(bool LRU)
 		v_loaded_frames.erase(v_loaded_frames.begin()+index_min);
 		v_last_use.erase(v_last_use.begin()+index_min);
 	}
-	else//clock
+	else//CLOCK
 	{
 		bool found = false;
-		for(uint i = 0 ; i < v_use_bit.size() ; ++i)
+		int index;
+		for(uint i = 0 ; i < v_use_bit.size()+1 ; ++i)
 		{
-			if(v_use_bit[i] == false && !found)
+			//if we are still inside of the vector
+			if(m_clock_position + i < v_use_bit.size())
 			{
-				//remove this frame
-				v_loaded_frames.erase(v_loaded_frames.begin()+i);
-				v_use_bit.erase(v_use_bit.begin()+i);
-				found = true;
+				//if this bit is 0 AND we haven't found a frame to remove already
+				if(v_use_bit[m_clock_position + i] == false && !found)
+				{
+					index = m_clock_position + i;
+					found = true;
+				}
+				else
+					v_use_bit[m_clock_position + i] = false;
 			}
+			else//if we exceed the size of the vector
+			{
+				//if this bit is 0 AND we haven't found a frame to remove already
+				if(v_use_bit[(m_clock_position + i)%v_use_bit.size()] == false && !found)
+				{
+					index = (m_clock_position + i)%v_use_bit.size();
+					found = true;
+				}
+				else
+					v_use_bit[(m_clock_position + i)%v_use_bit.size()] = false;
+			}
+
 		}
-		if(!found)
-		{
-			//remove the first one
-			v_loaded_frames.erase(v_loaded_frames.begin());
-			v_use_bit.erase(v_use_bit.begin());
-		}
+		//remove the frame selected
+		v_loaded_frames.erase(v_loaded_frames.begin()+index);
+		v_last_use.erase(v_last_use.begin()+index);
 	}
 
 }
